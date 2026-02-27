@@ -123,3 +123,32 @@ export default function AddWatch() {
 
           <div className="card p-5 space-y-4">
             <div className="font-semibold text-sm text-[#1a3028]">🔔 Notifications</div>
+            <div>
+              <label className="label">SMS (recommended)</label>
+              <input className="input" type="tel" placeholder="+1 555 000 0000"
+                value={notifyPhone} onChange={e => setNotifyPhone(e.target.value)} />
+            </div>
+            <div>
+              <label className="label">Email</label>
+              <input className="input" type="email" placeholder="you@email.com"
+                value={notifyEmail} onChange={e => setNotifyEmail(e.target.value)} />
+            </div>
+          </div>
+
+          {error && (
+            <div className="bg-red-50 border border-red-200 text-red-700 text-sm px-4 py-3 rounded-xl">
+              {error}
+            </div>
+          )}
+
+          <button type="submit" disabled={loading}
+            className="btn-primary w-full flex items-center justify-center gap-2 py-4 text-base">
+            {loading
+              ? <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+              : '🏕 Start watching'}
+          </button>
+        </form>
+      </main>
+    </div>
+  )
+}
