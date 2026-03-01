@@ -98,7 +98,7 @@ export default function Dashboard() {
             <div className="text-5xl mb-4">🏕</div>
             <h2 className="font-display text-xl font-semibold text-[#1a3028] mb-2">No watches yet</h2>
             <p className="text-sm text-[#3d2b1f]/60 mb-6 max-w-xs mx-auto">
-              Add a campground watch and we'll text you the moment a site opens up.
+              Add a campground watch and we will text you the moment a site opens up.
             </p>
             <Link href="/dashboard/add" className="btn-primary">Add your first watch</Link>
           </div>
@@ -121,11 +121,61 @@ function WatchCard({ watch, onToggle, onDelete }: {
 }) {
   const [confirming, setConfirming] = useState(false)
   const hasAlert = !!watch.last_available
-  const bookingUrl = `https://www.recreation.gov/camping/campgrounds/${watch.campground_id}/availability?start_date=${watch.start_date}`
+  const bookingUrl = 'https://www.recreation.gov/camping/campgrounds/' + watch.campground_id + '/availability?start_date=' + watch.start_date
 
   return (
-    <div className={`card p-5 transition-all ${!watch.active ? 'opacity-60' : ''} ${hasAlert ? 'border-[#4a7c59] bg-[#f0faf3]' : ''}`}>
+    <div className={'card p-5 transition-all ' + (!watch.active ? 'opacity-60 ' : '') + (hasAlert ? 'border-[#4a7c59] bg-[#f0faf3]' : '')}>
       <div className="flex items-start gap-4">
-        <div className={`mt-1 w-2.5 h-2.5 rounded-full flex-shrink-0 ${
-          hasAlert ? 'bg-[#4a7c59] shadow-[0_0_6px_#4a7c59]' :
-          watch.active ? 'bg-[#7fb
+        <div className={'mt-1 w-2.5 h-2.5 rounded-full flex-shrink-0 ' + (hasAlert ? 'bg-[#4a7c59] shadow-[0_0_6px_#4a7c59]' : watch.active ? 'bg-[#7fb98a] animate-pulse' : 'bg-gray-300')} />
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="font-semibold text-[#1a3028] text-sm">{watch.campground_name}</span>
+            <span className="text-xs text-[#3d2b1f]/40">{watch.park}</span>
+            {hasAlert && (
+              <span className="bg-[#4a7c59] text-white text-xs font-bold px-2 py-0.5 rounded-full">
+                🎉 Site available!
+              </span>
+            )}
+          </div>
+          <div className="flex items-center gap-4 mt-1.5 flex-wrap">
+            <span className="text-xs text-[#3d2b1f]/60">📅 {watch.start_date} to {watch.end_date}</span>
+            <span className="text-xs text-[#3d2b1f]/60">🌙 {watch.nights}+ nights</span>
+            {watch.last_checked && (
+              <span className="text-xs text-[#3d2b1f]/40">
+                Last checked: {new Date(watch.last_checked).toLocaleTimeString()}
+              </span>
+            )}
+          </div>
+          <div className="flex items-center gap-3 mt-2 flex-wrap">
+            {watch.notify_phone && <span className="text-xs text-[#4a7c59]">📱 {watch.notify_phone}</span>}
+            {watch.notify_email && <span className="text-xs text-[#4a7c59]">📧 {watch.notify_email}</span>}
+          </div>
+        </div>
+        <div className="flex items-center gap-2 flex-shrink-0">
+          {hasAlert && (
+            <a href={bookingUrl} target="_blank" rel="noopener noreferrer"
+              className="bg-[#4a7c59] text-white text-xs font-bold px-3 py-1.5 rounded-lg hover:bg-[#3d6b4a] transition-colors">
+              Book
+            </a>
+          )}
+          <button
+            onClick={() => onToggle(watch.id, watch.active)}
+            className={'text-xs px-3 py-1.5 rounded-lg border font-medium transition-colors ' + (watch.active ? 'border-[#ede5d5] text-[#3d2b1f]/60 hover:border-[#3d2b1f]/30' : 'border-[#4a7c59] text-[#4a7c59] hover:bg-[#4a7c59] hover:text-white')}>
+            {watch.active ? 'Pause' : 'Resume'}
+          </button>
+          {confirming ? (
+            <button onClick={() => onDelete(watch.id)}
+              className="text-xs px-3 py-1.5 rounded-lg bg-red-100 text-red-600 font-medium">
+              Confirm delete
+            </button>
+          ) : (
+            <button onClick={() => setConfirming(true)}
+              className="text-xs text-[#3d2b1f]/30 hover:text-red-400 transition-colors">
+              X
+            </button>
+          )}
+        </div>
+      </div>
+    </div>
+  )
+}
