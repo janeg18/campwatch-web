@@ -1,16 +1,13 @@
 'use client'
 
 import { useState } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase'
 
 export default function AuthPage() {
   const router = useRouter()
-  const params = useSearchParams()
-  const [mode, setMode] = useState<'signin' | 'signup'>(
-    params.get('mode') === 'signup' ? 'signup' : 'signin'
-  )
+  const [mode, setMode] = useState<'signin' | 'signup'>('signin')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [phone, setPhone] = useState('')
@@ -32,7 +29,7 @@ export default function AuthPage() {
         password,
         options: {
           data: { phone },
-          emailRedirectTo: `${window.location.origin}/dashboard`,
+          emailRedirectTo: window.location.origin + '/dashboard',
         },
       })
       if (error) setError(error.message)
@@ -54,28 +51,23 @@ export default function AuthPage() {
 
       <div className="card w-full max-w-sm p-8">
         <div className="flex rounded-xl bg-[#f5f0e8] p-1 mb-8">
-          {(['signin', 'signup'] as const).map(m => (
-            <button
-              key={m}
-              onClick={() => setMode(m)}
-              className={`flex-1 py-2 text-sm font-semibold rounded-lg transition-all ${
-                mode === m
-                  ? 'bg-white text-[#1a3028] shadow-sm'
-                  : 'text-[#3d2b1f]/50 hover:text-[#1a3028]'
-              }`}
-            >
-              {m === 'signin' ? 'Sign in' : 'Sign up'}
-            </button>
-          ))}
+          <button
+            onClick={() => setMode('signin')}
+            className={'flex-1 py-2 text-sm font-semibold rounded-lg transition-all ' + (mode === 'signin' ? 'bg-white text-[#1a3028] shadow-sm' : 'text-[#3d2b1f]/50 hover:text-[#1a3028]')}>
+            Sign in
+          </button>
+          <button
+            onClick={() => setMode('signup')}
+            className={'flex-1 py-2 text-sm font-semibold rounded-lg transition-all ' + (mode === 'signup' ? 'bg-white text-[#1a3028] shadow-sm' : 'text-[#3d2b1f]/50 hover:text-[#1a3028]')}>
+            Sign up
+          </button>
         </div>
 
         <h1 className="font-display text-2xl font-semibold text-[#1a3028] mb-1">
           {mode === 'signin' ? 'Welcome back' : 'Create account'}
         </h1>
         <p className="text-sm text-[#3d2b1f]/60 mb-6">
-          {mode === 'signin'
-            ? 'Sign in to manage your campsite watches'
-            : 'Start monitoring campsites for free'}
+          {mode === 'signin' ? 'Sign in to manage your campsite watches' : 'Start monitoring campsites for free'}
         </p>
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -95,7 +87,7 @@ export default function AuthPage() {
               <label className="label">Phone (for SMS alerts)</label>
               <input className="input" type="tel" placeholder="+1 555 000 0000"
                 value={phone} onChange={e => setPhone(e.target.value)} />
-              <p className="text-xs text-[#3d2b1f]/40 mt-1">Optional — add later in settings</p>
+              <p className="text-xs text-[#3d2b1f]/40 mt-1">Optional</p>
             </div>
           )}
           {error && (
@@ -108,4 +100,23 @@ export default function AuthPage() {
               {success}
             </div>
           )}
-          <button type="sub
+          <button type="submit" disabled={loading}
+            className="btn-primary w-full flex items-center justify-center gap-2 py-3">
+            {loading
+              ? <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+              : mode === 'signin' ? 'Sign in' : 'Create account'}
+          </button>
+        </form>
+      </div>
+
+      <p className="text-sm text-[#3d2b1f]/50 mt-6">
+        {mode === 'signin' ? "Don't have an account? " : 'Already have an account? '}
+        <button
+          onClick={() => setMode(mode === 'signin' ? 'signup' : 'signin')}
+          className="text-[#4a7c59] font-medium hover:underline">
+          {mode === 'signin' ? 'Sign up free' : 'Sign in'}
+        </button>
+      </p>
+    </div>
+  )
+}
