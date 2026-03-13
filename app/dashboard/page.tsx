@@ -121,8 +121,9 @@ function WatchCard({ watch, onToggle, onDelete }: {
 }) {
   const [confirming, setConfirming] = useState(false)
   const hasAlert = !!watch.last_available
-  const bookingUrl = 'https://www.recreation.gov/camping/campgrounds/' + watch.campground_id + '/availability?start_date=' + watch.start_date
-
+const startISO = new Date(watch.start_date + 'T00:00:00').toISOString()
+const endISO = new Date(watch.end_date + 'T00:00:00').toISOString()
+const bookingUrl = `https://www.recreation.gov/camping/campgrounds/${watch.campground_id}/availability?start_date=${encodeURIComponent(startISO)}&end_date=${encodeURIComponent(endISO)}&nights=${watch.nights}`
   return (
     <div className={'card p-5 transition-all ' + (!watch.active ? 'opacity-60 ' : '') + (hasAlert ? 'border-[#4a7c59] bg-[#f0faf3]' : '')}>
       <div className="flex items-start gap-4">
