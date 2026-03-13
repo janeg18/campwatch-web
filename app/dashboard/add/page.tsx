@@ -62,23 +62,28 @@ export default function AddWatch() {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) { router.push('/auth'); return }
 
-    const { error: err } = await supabase.from('watches').insert({
-      user_id: user.id,
-      campground_id: selected.FacilityID,
-      campground_name: selected.FacilityName,
-      park: selected.ParentRecAreaName || '',
-      state: selected.AddressStateCode || '',
-      start_date: startDate,
-      end_date: endDate,
-      nights,
-      notify_email: notifyEmail || null,
-      notify_phone: notifyPhone || null,
-      active: true,
-      alert_sent: false,
-    })
+    
+    const watchData = {
+  campground_id: selected.FacilityID,
+  campground_name: selected.FacilityName,
+  park: selected.ParentRecAreaName || '',
+  state: selected.AddressStateCode || '',
+  start_date: startDate,
+  end_date: endDate,
+  nights,
+  notify_email: notifyEmail || null,
+  notify_phone: notifyPhone || null,
+}
 
-    if (err) { setError(err.message); setLoading(false); return }
-    router.push('/dashboard')
+const res = await fetch('/api/checkout', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ watchData, userId: user.id }),
+})
+
+const data = await res.json()
+if (data.error) { setError(data.error); setLoading(false); return }
+window.location.href = data.url
   }
 
   return (
