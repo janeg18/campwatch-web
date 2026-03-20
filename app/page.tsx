@@ -43,7 +43,7 @@ export default function Home() {
         <div className="relative z-10 px-8 md:px-16 py-20 md:py-28 max-w-4xl">
           <div className="inline-flex items-center gap-2 bg-white/10 text-white/80 text-xs font-medium px-3 py-1.5 rounded-full mb-6">
             <span className="w-1.5 h-1.5 rounded-full bg-[#7fb98a] animate-pulse" />
-            Scanning 100+ campgrounds every 5 minutes
+            Scanning 100+ campgrounds every minute
           </div>
           <h1 className="font-display text-4xl md:text-6xl font-bold text-white leading-tight mb-6">
             Stop refreshing.<br />
@@ -75,7 +75,7 @@ export default function Home() {
         <div className="grid md:grid-cols-3 gap-6">
           {[
             { step: '01', icon: '🔍', title: 'Pick a campground', desc: 'Choose any campground and set your ideal dates and how many nights you need.' },
-            { step: '02', icon: '⚡', title: 'We watch 24/7', desc: 'Our scanner checks Recreation.gov every 5 minutes for cancellations and new openings.' },
+            { step: '02', icon: '⚡', title: 'We watch 24/7', desc: 'Our scanner checks Recreation.gov every minute for cancellations and new openings.' },
             { step: '03', icon: '📱', title: 'Get instant alerts', desc: 'The moment a site opens up, we text and email you so you can book immediately.' },
           ].map(item => (
             <div key={item.step} className="card p-6">
