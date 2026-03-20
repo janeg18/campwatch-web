@@ -212,22 +212,60 @@ export default function Home() {
           </h2>
           <p className="text-[#3d2b1f]/50 text-sm">Any site on Recreation.gov — click a park to explore</p>
         </div>
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
           {parks.map(park => (
             <div key={park.name}>
               <button
                 onClick={() => setExpandedPark(expandedPark === park.name ? null : park.name)}
-                className={'group relative overflow-hidden rounded-2xl w-full text-left transition-all duration-200 ' +
-                  (expandedPark === park.name ? 'ring-2 ring-[#4a7c59]' : 'hover:scale-[1.02]')}
-                style={{ background: expandedPark === park.name ? '#1a3028' : '#2d4a3e' }}
+                className={'relative overflow-hidden rounded-2xl w-full text-left transition-all duration-200 ' +
+                  (expandedPark === park.name ? 'ring-2 ring-white scale-[0.99]' : 'hover:scale-[1.02] hover:shadow-xl')}
+                style={{
+                  background: park.bg,
+                  minHeight: '180px',
+                }}
               >
-                <div className="p-5 md:p-6">
-                  <div className="text-4xl mb-4">{park.emoji}</div>
-                  <div className="font-display font-bold text-white text-lg leading-tight">{park.name}</div>
-                  <div className="text-white/40 text-xs mt-1">{park.campgrounds.length} campground{park.campgrounds.length > 1 ? 's' : ''}</div>
+                {/* Vintage texture overlay */}
+                <div className="absolute inset-0 opacity-20"
+                  style={{
+                    backgroundImage: `repeating-linear-gradient(
+                      0deg, transparent, transparent 2px,
+                      rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px
+                    )`
+                  }}
+                />
+                {/* Top banner */}
+                <div className="absolute top-0 left-0 right-0 py-1.5 text-center"
+                  style={{ background: park.banner }}>
+                  <span className="text-xs font-bold tracking-widest uppercase opacity-90"
+                    style={{ color: park.bannerText }}>
+                    National Park
+                  </span>
                 </div>
-                <div className={'absolute bottom-3 right-4 text-white/30 text-xs transition-transform duration-200 ' + (expandedPark === park.name ? 'rotate-180' : '')}>
-                  ▼
+                {/* Content */}
+                <div className="relative z-10 pt-10 pb-8 px-5 flex flex-col items-center text-center">
+                  <div className="text-5xl mb-3 drop-shadow-sm">{park.emoji}</div>
+                  {/* Decorative line */}
+                  <div className="flex items-center gap-2 mb-2 w-full justify-center">
+                    <div className="h-px flex-1 opacity-30" style={{ background: park.textColor }} />
+                    <span className="text-xs opacity-50" style={{ color: park.textColor }}>✦</span>
+                    <div className="h-px flex-1 opacity-30" style={{ background: park.textColor }} />
+                  </div>
+                  <div className="font-display font-bold text-xl leading-tight mb-1"
+                    style={{ color: park.textColor }}>
+                    {park.name}
+                  </div>
+                  <div className="text-xs opacity-50 tracking-wider uppercase"
+                    style={{ color: park.textColor }}>
+                    {park.state}
+                  </div>
+                </div>
+                {/* Bottom banner */}
+                <div className="absolute bottom-0 left-0 right-0 py-1.5 text-center"
+                  style={{ background: park.banner }}>
+                  <span className="text-xs font-bold tracking-widest uppercase opacity-90"
+                    style={{ color: park.bannerText }}>
+                    {park.campgrounds.length} Campground{park.campgrounds.length > 1 ? 's' : ''}
+                  </span>
                 </div>
               </button>
               {expandedPark === park.name && (
