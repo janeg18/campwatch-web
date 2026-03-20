@@ -1,17 +1,15 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useSearchParams } from 'next/navigation'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase'
+import { Suspense } from 'react'
 
-export default function AuthPage() {
+function AuthForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const [mode, setMode] = useState<'signin' | 'signup'>(
-    searchParams.get('mode') === 'signup' ? 'signup' : 'signin'
-  )
+  const [mode, setMode] = useState<'signin' | 'signup'>('signin')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [phone, setPhone] = useState('')
@@ -20,6 +18,12 @@ export default function AuthPage() {
   const [success, setSuccess] = useState('')
 
   const supabase = createClient()
+
+  useEffect(() => {
+    if (searchParams.get('mode') === 'signup') {
+      setMode('signup')
+    }
+  }, [searchParams])
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -122,5 +126,13 @@ export default function AuthPage() {
         </button>
       </p>
     </div>
+  )
+}
+
+export default function AuthPage() {
+  return (
+    <Suspense>
+      <AuthForm />
+    </Suspense>
   )
 }
