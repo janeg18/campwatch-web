@@ -63,7 +63,6 @@ export default function Home() {
   const [stateResults, setStateResults] = useState<any[]>([])
   const [stateSearching, setStateSearching] = useState(false)
 
-  // Watch modal form state
   const [startDate, setStartDate] = useState('')
   const [endDate, setEndDate] = useState('')
   const [nights, setNights] = useState(2)
@@ -205,34 +204,40 @@ export default function Home() {
       </section>
 
       {/* Parks we monitor */}
-      <section className="max-w-5xl mx-auto px-6 mb-12">
-        <h2 className="font-display text-3xl font-semibold text-center text-[#1a3028] mb-2">
-          Parks we monitor
-        </h2>
-        <p className="text-center text-[#3d2b1f]/60 mb-2 text-sm">Any campground on Recreation.gov — 4,000+ sites across the US</p>
-        <p className="text-center text-[#3d2b1f]/40 mb-10 text-xs">A few popular ones — click to explore campgrounds</p>
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+      <section className="max-w-6xl mx-auto px-6 mb-8">
+        <div className="text-center mb-10">
+          <p className="text-xs font-bold tracking-widest text-[#4a7c59] uppercase mb-3">Coverage</p>
+          <h2 className="font-display text-4xl font-bold text-[#1a3028] mb-3">
+            4,000+ campgrounds.<br />One simple alert.
+          </h2>
+          <p className="text-[#3d2b1f]/50 text-sm">Any site on Recreation.gov — click a park to explore</p>
+        </div>
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
           {parks.map(park => (
             <div key={park.name}>
               <button
                 onClick={() => setExpandedPark(expandedPark === park.name ? null : park.name)}
-                className={'card p-5 flex items-center gap-4 w-full text-left transition-all hover:shadow-md ' + (expandedPark === park.name ? 'border-[#4a7c59] bg-[#f0faf3]' : '')}
+                className={'group relative overflow-hidden rounded-2xl w-full text-left transition-all duration-200 ' +
+                  (expandedPark === park.name ? 'ring-2 ring-[#4a7c59]' : 'hover:scale-[1.02]')}
+                style={{ background: expandedPark === park.name ? '#1a3028' : '#2d4a3e' }}
               >
-                <span className="text-3xl">{park.emoji}</span>
-                <div className="flex-1">
-                  <div className="font-semibold text-[#1a3028] text-sm">{park.name}</div>
-                  <div className="text-xs text-[#3d2b1f]/50">{park.campgrounds.length} campground{park.campgrounds.length > 1 ? 's' : ''}</div>
+                <div className="p-5 md:p-6">
+                  <div className="text-4xl mb-4">{park.emoji}</div>
+                  <div className="font-display font-bold text-white text-lg leading-tight">{park.name}</div>
+                  <div className="text-white/40 text-xs mt-1">{park.campgrounds.length} campground{park.campgrounds.length > 1 ? 's' : ''}</div>
                 </div>
-                <span className="text-[#3d2b1f]/30 text-xs">{expandedPark === park.name ? '▲' : '▼'}</span>
+                <div className={'absolute bottom-3 right-4 text-white/30 text-xs transition-transform duration-200 ' + (expandedPark === park.name ? 'rotate-180' : '')}>
+                  ▼
+                </div>
               </button>
               {expandedPark === park.name && (
-                <div className="mt-1 border border-[#ede5d5] rounded-xl overflow-hidden bg-white shadow-sm">
+                <div className="mt-1 rounded-2xl overflow-hidden border border-[#1a3028]/10 bg-white shadow-lg">
                   {park.campgrounds.map(cg => (
-                    <div key={cg.id} className="flex items-center justify-between px-4 py-3 border-b border-[#ede5d5] last:border-0">
-                      <span className="text-sm text-[#1a3028]">{cg.name}</span>
+                    <div key={cg.id} className="flex items-center justify-between px-4 py-3.5 border-b border-[#f0ebe3] last:border-0 hover:bg-[#f8f5f0] transition-colors">
+                      <span className="text-sm font-medium text-[#1a3028]">{cg.name}</span>
                       <button
                         onClick={() => openWatchModal(cg, park)}
-                        className="text-xs font-semibold bg-[#4a7c59] text-white px-3 py-1.5 rounded-lg hover:bg-[#3d6b4a] transition-colors">
+                        className="text-xs font-bold bg-[#1a3028] text-white px-3 py-1.5 rounded-lg hover:bg-[#4a7c59] transition-colors ml-4 flex-shrink-0">
                         Watch
                       </button>
                     </div>
@@ -245,16 +250,17 @@ export default function Home() {
       </section>
 
       {/* Search by state */}
-      <section className="max-w-2xl mx-auto px-6 mb-20">
-        <div className="card p-8">
-          <h2 className="font-display text-2xl font-semibold text-[#1a3028] mb-2">
-            Find campgrounds near you
+      <section className="mb-20" style={{ background: '#1a3028' }}>
+        <div className="max-w-3xl mx-auto px-6 py-16 text-center">
+          <p className="text-xs font-bold tracking-widest text-[#7fb98a] uppercase mb-3">Search</p>
+          <h2 className="font-display text-3xl md:text-4xl font-bold text-white mb-3">
+            Find your campground
           </h2>
-          <p className="text-sm text-[#3d2b1f]/60 mb-6">Enter a state code to discover top campgrounds</p>
-          <div className="flex gap-2 mb-4">
+          <p className="text-white/50 text-sm mb-8">Enter a state code to discover campgrounds near you</p>
+          <div className="flex gap-2 max-w-md mx-auto mb-6">
             <input
-              className="input flex-1"
-              placeholder="e.g. CA, UT, WY..."
+              className="flex-1 bg-white/10 border border-white/20 text-white placeholder-white/30 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#7fb98a] transition-colors"
+              placeholder="e.g. CA, UT, WY, CO..."
               value={stateQuery}
               onChange={e => setStateQuery(e.target.value)}
               onKeyDown={e => e.key === 'Enter' && searchByState()}
@@ -262,26 +268,26 @@ export default function Home() {
             <button
               onClick={searchByState}
               disabled={stateSearching}
-              className="btn-primary px-6">
+              className="bg-[#7fb98a] text-[#1a3028] font-bold px-6 py-3 rounded-xl hover:bg-[#8fcb9b] transition-colors text-sm flex-shrink-0">
               {stateSearching
-                ? <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin block" />
+                ? <span className="w-4 h-4 border-2 border-[#1a3028]/30 border-t-[#1a3028] rounded-full animate-spin block" />
                 : 'Search'}
             </button>
           </div>
           {stateResults.length > 0 && (
-            <div className="border border-[#ede5d5] rounded-xl overflow-hidden">
-              {stateResults.map((cg, i) => (
-                <div key={cg.FacilityID} className="flex items-center justify-between px-4 py-3 border-b border-[#ede5d5] last:border-0 hover:bg-[#f5f0e8] transition-colors">
+            <div className="rounded-2xl overflow-hidden text-left">
+              {stateResults.map((cg) => (
+                <div key={cg.FacilityID} className="flex items-center justify-between px-4 py-3.5 border-b border-white/5 last:border-0 bg-white/5 hover:bg-white/10 transition-colors">
                   <div>
-                    <div className="font-medium text-sm text-[#1a3028]">{cg.FacilityName}</div>
-                    <div className="text-xs text-[#3d2b1f]/50">{cg.ParentRecAreaName}</div>
+                    <div className="font-medium text-sm text-white">{cg.FacilityName}</div>
+                    <div className="text-xs text-white/40 mt-0.5">{cg.ParentRecAreaName}</div>
                   </div>
                   <button
                     onClick={() => openWatchModal(
                       { id: cg.FacilityID, name: cg.FacilityName },
                       { name: cg.ParentRecAreaName || '', state: cg.AddressStateCode || stateQuery.toUpperCase() }
                     )}
-                    className="text-xs font-semibold bg-[#4a7c59] text-white px-3 py-1.5 rounded-lg hover:bg-[#3d6b4a] transition-colors ml-4 flex-shrink-0">
+                    className="text-xs font-bold bg-[#7fb98a] text-[#1a3028] px-3 py-1.5 rounded-lg hover:bg-[#8fcb9b] transition-colors ml-4 flex-shrink-0">
                     Watch
                   </button>
                 </div>
@@ -330,7 +336,6 @@ export default function Home() {
               </div>
               <button onClick={() => setWatchModal(null)} className="text-[#3d2b1f]/30 hover:text-[#3d2b1f] text-xl">×</button>
             </div>
-
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-3">
                 <div>
@@ -363,7 +368,6 @@ export default function Home() {
                   value={notifyEmail} onChange={e => setNotifyEmail(e.target.value)} />
               </div>
             </div>
-
             <div className="flex gap-3 mt-6">
               <button onClick={() => setWatchModal(null)}
                 className="flex-1 py-3 rounded-xl border border-[#ede5d5] text-sm font-medium text-[#3d2b1f]/70 hover:border-[#3d2b1f]/30 transition-colors">
