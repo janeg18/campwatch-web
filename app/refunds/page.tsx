@@ -41,7 +41,7 @@ export default function Refunds() {
 
           <section>
             <h2 className="font-display text-lg font-semibold text-[#1a3028] mb-3">How to request a refund</h2>
-            <p>Email us at <a href="mailto:hello@campwatch.app" className="text-[#4a7c59] underline">hello@campwatch.app</a> with your account email and a brief description of the issue. We aim to respond within 1 business day.</p>
+            <p>Email us at <a href="mailto:hello@campwatch.app" className="text-[#4a7c59] underline">hello@campwatch.app</a> with your account email and a brief description of the issue. We aim to respond within 3 business day.</p>
           </section>
 
         </div>
