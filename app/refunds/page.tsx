@@ -27,7 +27,6 @@ export default function Refunds() {
             <ul className="mt-2 space-y-2 list-disc list-inside text-[#3d2b1f]/70">
               <li>You were charged twice for the same watch due to a technical error</li>
               <li>Your watch was never activated due to a bug on our end</li>
-              <li>You contact us within 24 hours of purchase and no notifications have been sent yet</li>
             </ul>
           </section>
 
