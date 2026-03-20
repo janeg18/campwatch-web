@@ -489,7 +489,11 @@ export default function Home() {
             <span>🏕</span>
             <span className="font-display">CampWatch</span>
           </div>
-          <div>Built with ♥ for campers</div>
+          <div className="flex gap-4">
+            <Link href="/terms" className="hover:text-[#1a3028]">Terms</Link>
+            <Link href="/privacy" className="hover:text-[#1a3028]">Privacy</Link>
+            <Link href="/refunds" className="hover:text-[#1a3028]">Refunds</Link>
+          </div>
         </div>
       </footer>
 
