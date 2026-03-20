@@ -302,7 +302,7 @@ export default function Home() {
           </p>
           <p className="text-[#3d2b1f]/40 mb-8 text-xs">No subscription. No hidden fees. Just alerts.</p>
           <Link href="/auth?mode=signup" className="btn-primary text-base px-10 py-4">
-            Create free account →
+            Get started →
           </Link>
         </div>
       </section>
