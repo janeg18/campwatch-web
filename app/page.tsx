@@ -24,7 +24,7 @@ export default function Home() {
             Sign in
           </Link>
           <Link href="/auth?mode=signup" className="btn-primary">
-            Get started free
+            Get started
           </Link>
         </div>
       </nav>
@@ -53,16 +53,17 @@ export default function Home() {
             CampWatch monitors Recreation.gov and texts you the moment a campsite opens up —
             so you can book before anyone else.
           </p>
-          <div className="flex flex-col sm:flex-row gap-3">
+          <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center">
             <Link href="/auth?mode=signup"
               className="inline-flex items-center justify-center gap-2 bg-[#7fb98a] text-[#1a3028] font-bold px-8 py-4 rounded-xl hover:bg-[#8fcb9b] transition-all text-base">
-              Start watching for free →
+              Start watching →
             </Link>
             <Link href="/auth"
               className="inline-flex items-center justify-center gap-2 bg-white/10 text-white font-semibold px-8 py-4 rounded-xl hover:bg-white/20 transition-all text-base">
               Sign in
             </Link>
           </div>
+          <p className="text-white/40 text-xs mt-4">$2.99 per watch · one-time payment · no subscription</p>
         </div>
       </section>
 
@@ -84,6 +85,17 @@ export default function Home() {
               <p className="text-sm text-[#3d2b1f]/70 leading-relaxed">{item.desc}</p>
             </div>
           ))}
+        </div>
+
+        {/* Pricing note */}
+        <div className="mt-10 text-center">
+          <div className="inline-flex items-center gap-3 bg-[#f0faf3] border border-[#4a7c59]/20 rounded-2xl px-6 py-4">
+            <span className="text-2xl">💳</span>
+            <div className="text-left">
+              <div className="font-semibold text-[#1a3028] text-sm">$2.99 per watch, one-time</div>
+              <div className="text-xs text-[#3d2b1f]/60">No subscription. Pay once per campground watch, keep it as long as you need.</div>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -112,9 +124,10 @@ export default function Home() {
           <h2 className="font-display text-3xl font-semibold text-[#1a3028] mb-4">
             Ready to snag that site?
           </h2>
-          <p className="text-[#3d2b1f]/70 mb-8 text-sm leading-relaxed">
-            Free to use. No credit card. Just sign up and add a watch.
+          <p className="text-[#3d2b1f]/70 mb-2 text-sm leading-relaxed">
+            Sign up free, then add a watch for any campground — $2.99 per watch, one-time.
           </p>
+          <p className="text-[#3d2b1f]/40 mb-8 text-xs">No subscription. No hidden fees. Just alerts.</p>
           <Link href="/auth?mode=signup" className="btn-primary text-base px-10 py-4">
             Create free account →
           </Link>
