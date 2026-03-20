@@ -70,7 +70,7 @@ export default function Dashboard() {
         <div className="flex items-start justify-between mb-8">
           <div>
             <h1 className="font-display text-3xl font-semibold text-[#1a3028] mb-1">My Watches</h1>
-            <p className="text-sm text-[#3d2b1f]/60">{activeCount} active · scanning every 5 minutes</p>
+            <p className="text-sm text-[#3d2b1f]/60">{activeCount} active · scanning every minute</p>
           </div>
           <Link href="/dashboard/add" className="btn-primary flex items-center gap-2">
             <span>+</span> Add watch
