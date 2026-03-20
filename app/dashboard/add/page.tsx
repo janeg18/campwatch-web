@@ -14,6 +14,18 @@ type Campground = {
   FacilityLongitude: number
 }
 
+type WatchData = {
+  campground_id: string
+  campground_name: string
+  park: string
+  state: string
+  start_date: string
+  end_date: string
+  nights: number
+  notify_email: string | null
+  notify_phone: string | null
+}
+
 export default function AddWatch() {
   const router = useRouter()
   const supabase = createClient()
@@ -31,6 +43,11 @@ export default function AddWatch() {
   const [notifyPhone, setNotifyPhone] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+
+  // Confirmation modal state
+  const [showConfirm, setShowConfirm] = useState(false)
+  const [pendingWatchData, setPendingWatchData] = useState<WatchData | null>(null)
+  const [pendingUserId, setPendingUserId] = useState<string | null>(null)
 
   const today = new Date().toISOString().split('T')[0]
 
@@ -58,32 +75,40 @@ export default function AddWatch() {
     if (endDate <= startDate) { setError('Check-out must be after check-in'); return }
     if (!notifyEmail && !notifyPhone) { setError('Add at least one notification method'); return }
 
-    setLoading(true)
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) { router.push('/auth'); return }
 
-    
-    const watchData = {
-  campground_id: selected.FacilityID,
-  campground_name: selected.FacilityName,
-  park: selected.ParentRecAreaName || '',
-  state: selected.AddressStateCode || '',
-  start_date: startDate,
-  end_date: endDate,
-  nights,
-  notify_email: notifyEmail || null,
-  notify_phone: notifyPhone || null,
-}
+    const watchData: WatchData = {
+      campground_id: selected.FacilityID,
+      campground_name: selected.FacilityName,
+      park: selected.ParentRecAreaName || '',
+      state: selected.AddressStateCode || '',
+      start_date: startDate,
+      end_date: endDate,
+      nights,
+      notify_email: notifyEmail || null,
+      notify_phone: notifyPhone || null,
+    }
 
-const res = await fetch('/api/checkout', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({ watchData, userId: user.id }),
-})
+    setPendingWatchData(watchData)
+    setPendingUserId(user.id)
+    setShowConfirm(true)
+  }
 
-const data = await res.json()
-if (data.error) { setError(data.error); setLoading(false); return }
-window.location.href = data.url
+  async function handleConfirmPayment() {
+    if (!pendingWatchData || !pendingUserId) return
+    setLoading(true)
+    setShowConfirm(false)
+
+    const res = await fetch('/api/checkout', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ watchData: pendingWatchData, userId: pendingUserId }),
+    })
+
+    const data = await res.json()
+    if (data.error) { setError(data.error); setLoading(false); return }
+    window.location.href = data.url
   }
 
   return (
@@ -233,8 +258,72 @@ window.location.href = data.url
               ? <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
               : '🏕 Start watching'}
           </button>
+
+          <p className="text-center text-xs text-[#3d2b1f]/40">
+            $2.99 one-time payment · you will be prompted to pay before the watch is created
+          </p>
         </form>
       </main>
+
+      {/* Confirmation Modal */}
+      {showConfirm && pendingWatchData && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4"
+          style={{ background: 'rgba(0,0,0,0.4)' }}>
+          <div className="bg-[#f5f0e8] rounded-2xl shadow-xl max-w-sm w-full p-6">
+            <div className="text-2xl mb-3">💳</div>
+            <h2 className="font-display text-xl font-semibold text-[#1a3028] mb-1">
+              One-time payment of $2.99
+            </h2>
+            <p className="text-sm text-[#3d2b1f]/60 mb-5">
+              This is a one-time monitoring fee — not a campsite booking. After payment, CampWatch will scan Recreation.gov every 5 minutes and alert you the moment a site opens up.
+            </p>
+
+            <div className="bg-white rounded-xl p-4 mb-5 space-y-2">
+              <div className="flex justify-between text-sm">
+                <span className="text-[#3d2b1f]/60">Campground</span>
+                <span className="font-medium text-[#1a3028] text-right max-w-[60%]">{pendingWatchData.campground_name}</span>
+              </div>
+              <div className="flex justify-between text-sm">
+                <span className="text-[#3d2b1f]/60">Dates</span>
+                <span className="font-medium text-[#1a3028]">{pendingWatchData.start_date} → {pendingWatchData.end_date}</span>
+              </div>
+              <div className="flex justify-between text-sm">
+                <span className="text-[#3d2b1f]/60">Min nights</span>
+                <span className="font-medium text-[#1a3028]">{pendingWatchData.nights}+</span>
+              </div>
+              {pendingWatchData.notify_phone && (
+                <div className="flex justify-between text-sm">
+                  <span className="text-[#3d2b1f]/60">SMS alerts</span>
+                  <span className="font-medium text-[#1a3028]">{pendingWatchData.notify_phone}</span>
+                </div>
+              )}
+              {pendingWatchData.notify_email && (
+                <div className="flex justify-between text-sm">
+                  <span className="text-[#3d2b1f]/60">Email alerts</span>
+                  <span className="font-medium text-[#1a3028]">{pendingWatchData.notify_email}</span>
+                </div>
+              )}
+              <div className="border-t border-[#ede5d5] pt-2 flex justify-between text-sm font-bold">
+                <span className="text-[#1a3028]">Total</span>
+                <span className="text-[#1a3028]">$2.99</span>
+              </div>
+            </div>
+
+            <div className="flex gap-3">
+              <button
+                onClick={() => setShowConfirm(false)}
+                className="flex-1 py-3 rounded-xl border border-[#ede5d5] text-sm font-medium text-[#3d2b1f]/70 hover:border-[#3d2b1f]/30 transition-colors">
+                Go back
+              </button>
+              <button
+                onClick={handleConfirmPayment}
+                className="flex-1 py-3 rounded-xl bg-[#1a3028] text-white text-sm font-bold hover:bg-[#2a4038] transition-colors">
+                Pay $2.99 →
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
