@@ -238,6 +238,9 @@ export default function AddWatch() {
               <label className="label">SMS (recommended)</label>
               <input className="input" type="tel" placeholder="+1 555 000 0000"
                 value={notifyPhone} onChange={e => setNotifyPhone(e.target.value)} />
+              <p className="text-xs text-[#3d2b1f]/40 mt-1.5">
+                By entering your phone number, you agree to receive SMS alerts from CampWatch. Reply STOP to unsubscribe. Msg & data rates may apply.
+              </p>
             </div>
             <div>
               <label className="label">Email</label>
