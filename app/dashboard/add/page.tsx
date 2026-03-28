@@ -41,10 +41,10 @@ export default function AddWatch() {
   const [nights, setNights] = useState(2)
   const [notifyEmail, setNotifyEmail] = useState('')
   const [notifyPhone, setNotifyPhone] = useState('')
+  const [smsConsent, setSmsConsent] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
-  // Confirmation modal state
   const [showConfirm, setShowConfirm] = useState(false)
   const [pendingWatchData, setPendingWatchData] = useState<WatchData | null>(null)
   const [pendingUserId, setPendingUserId] = useState<string | null>(null)
@@ -74,6 +74,7 @@ export default function AddWatch() {
     if (!startDate || !endDate) { setError('Please select dates'); return }
     if (endDate <= startDate) { setError('Check-out must be after check-in'); return }
     if (!notifyEmail && !notifyPhone) { setError('Add at least one notification method'); return }
+    if (notifyPhone && !smsConsent) { setError('Please check the box to agree to receive SMS alerts'); return }
 
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) { router.push('/auth'); return }
@@ -238,9 +239,19 @@ export default function AddWatch() {
               <label className="label">SMS (recommended)</label>
               <input className="input" type="tel" placeholder="+1 555 000 0000"
                 value={notifyPhone} onChange={e => setNotifyPhone(e.target.value)} />
-              <p className="text-xs text-[#3d2b1f]/40 mt-1.5">
-                By entering your phone number, you agree to receive SMS alerts from CampWatch. Reply STOP to unsubscribe. Msg & data rates may apply.
-              </p>
+              {notifyPhone && (
+                <label className="flex items-start gap-2.5 mt-3 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={smsConsent}
+                    onChange={e => setSmsConsent(e.target.checked)}
+                    className="mt-0.5 accent-[#4a7c59] flex-shrink-0 w-4 h-4"
+                  />
+                  <span className="text-xs text-[#3d2b1f]/60 leading-relaxed">
+                    I agree to receive recurring SMS availability alerts from CampWatch at the number provided. Reply STOP to unsubscribe, HELP for help. Msg & data rates may apply. No mobile data will be shared with third parties for marketing purposes. View our <Link href="/privacy" className="underline hover:text-[#1a3028]">Privacy Policy</Link>.
+                  </span>
+                </label>
+              )}
             </div>
             <div>
               <label className="label">Email</label>
@@ -268,7 +279,6 @@ export default function AddWatch() {
         </form>
       </main>
 
-      {/* Confirmation Modal */}
       {showConfirm && pendingWatchData && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4"
           style={{ background: 'rgba(0,0,0,0.4)' }}>
@@ -278,7 +288,7 @@ export default function AddWatch() {
               One-time payment of $2.99
             </h2>
             <p className="text-sm text-[#3d2b1f]/60 mb-5">
-              This is a one-time monitoring fee — not a campsite booking. After payment, CampWatch will scan Recreation.gov every 5 minutes and alert you the moment a site opens up.
+              This is a one-time monitoring fee — not a campsite booking. After payment, CampWatch will scan Recreation.gov every minute and alert you the moment a site opens up.
             </p>
 
             <div className="bg-white rounded-xl p-4 mb-5 space-y-2">
