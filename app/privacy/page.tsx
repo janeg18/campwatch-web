@@ -30,6 +30,7 @@ export default function Privacy() {
           <section>
             <h2 className="font-display text-lg font-semibold text-[#1a3028] mb-3">2. How we use it</h2>
             <p>Your information is used solely to operate CampWatch — to send you availability alerts, process payments, and manage your account. We do not sell, rent, or share your personal information with third parties for marketing purposes.</p>
+            <p className="mt-3">Mobile opt-in data and mobile phone numbers will never be shared with third parties or affiliates for marketing or promotional purposes at any time.</p>
           </section>
 
           <section>
