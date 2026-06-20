@@ -161,7 +161,7 @@ export default function Home() {
             <span style={{ color: '#7fb98a' }}>Start camping.</span>
           </h1>
           <p className="text-white/60 text-lg max-w-md mb-10 leading-relaxed">
-            CampWatch monitors Recreation.gov and texts you the moment a campsite opens up — so you can book before anyone else.
+            CampWatch monitors Recreation.gov and messages you the moment a campsite opens up — so you can book before anyone else.
           </p>
           <div className="flex flex-col sm:flex-row gap-3">
             <Link href="/auth?mode=signup" className="inline-flex items-center justify-center gap-2 bg-[#7fb98a] text-[#1a3028] font-bold px-8 py-3.5 rounded-xl hover:bg-[#8fcb9b] transition-all text-sm">
@@ -199,7 +199,7 @@ export default function Home() {
               num: '03',
               icon: '📱',
               title: 'Get instant alerts',
-              desc: 'The moment a site opens up, we text and email you so you can book before anyone else.',
+              desc: 'The moment a site opens up, we email you so you can book before anyone else.',
             },
           ].map(item => (
             <div key={item.num} className="bg-white rounded-2xl p-6 border border-[#e8e0d5]">
