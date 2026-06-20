@@ -1,8 +1,9 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { createClient } from '@/lib/supabase'
 
 const parks = [
   {
@@ -69,6 +70,10 @@ type WatchModal = {
 
 export default function Home() {
   const router = useRouter()
+  const [supabase] = useState(() => createClient())
+  const [user, setUser] = useState<any>(null)
+  const [authLoaded, setAuthLoaded] = useState(false)
+
   const [expandedPark, setExpandedPark] = useState<string | null>(null)
   const [watchModal, setWatchModal] = useState<WatchModal | null>(null)
   const [stateQuery, setStateQuery] = useState('')
@@ -79,9 +84,26 @@ export default function Home() {
   const [endDate, setEndDate] = useState('')
   const [nights, setNights] = useState(2)
   const [notifyEmail, setNotifyEmail] = useState('')
-  const [notifyPhone, setNotifyPhone] = useState('')
 
   const today = new Date().toISOString().split('T')[0]
+
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data }) => {
+      setUser(data.user ?? null)
+      setAuthLoaded(true)
+    })
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null)
+      setAuthLoaded(true)
+    })
+    return () => subscription.unsubscribe()
+  }, [supabase])
+
+  async function handleSignOut() {
+    await supabase.auth.signOut()
+    setUser(null)
+    router.refresh()
+  }
 
   async function searchByState() {
     if (stateQuery.trim().length < 2) return
@@ -107,11 +129,15 @@ export default function Home() {
     setEndDate('')
     setNights(2)
     setNotifyEmail('')
-    setNotifyPhone('')
   }
 
   function handleWatchSubmit() {
     if (!watchModal || !startDate || !endDate) return
+    // Already signed in → straight to the dashboard add-watch page, no re-login.
+    if (user) {
+      router.push('/dashboard/add')
+      return
+    }
     const params = new URLSearchParams({
       campground_id: watchModal.campgroundId,
       campground_name: watchModal.campgroundName,
@@ -121,7 +147,6 @@ export default function Home() {
       end_date: endDate,
       nights: String(nights),
       notify_email: notifyEmail,
-      notify_phone: notifyPhone,
     })
     router.push('/auth?mode=signup&' + params.toString())
   }
@@ -136,12 +161,30 @@ export default function Home() {
           <span className="font-display font-semibold text-lg text-[#1a3028]">CampWatch</span>
         </div>
         <div className="flex items-center gap-3">
-          <Link href="/auth" className="text-sm font-medium text-[#3d2b1f]/60 hover:text-[#1a3028] transition-colors">
-            Sign in
-          </Link>
-          <Link href="/auth?mode=signup" className="btn-primary">
-            Get started
-          </Link>
+          {!authLoaded ? (
+            <div className="w-7 h-7 rounded-full bg-[#1a3028]/10 animate-pulse" />
+          ) : user ? (
+            <>
+              <Link href="/dashboard" className="flex items-center gap-2 text-sm font-medium text-[#1a3028] hover:opacity-80 transition-opacity">
+                <span className="w-7 h-7 rounded-full bg-[#1a3028] text-white flex items-center justify-center text-xs font-semibold uppercase">
+                  {user.email?.[0] ?? '?'}
+                </span>
+                <span className="hidden sm:inline max-w-[180px] truncate">{user.email}</span>
+              </Link>
+              <button onClick={handleSignOut} className="text-sm font-medium text-[#3d2b1f]/50 hover:text-[#1a3028] transition-colors">
+                Sign out
+              </button>
+            </>
+          ) : (
+            <>
+              <Link href="/auth" className="text-sm font-medium text-[#3d2b1f]/60 hover:text-[#1a3028] transition-colors">
+                Sign in
+              </Link>
+              <Link href="/auth?mode=signup" className="btn-primary">
+                Get started
+              </Link>
+            </>
+          )}
         </div>
       </nav>
 
@@ -164,11 +207,11 @@ export default function Home() {
             CampWatch monitors Recreation.gov and messages you the moment a campsite opens up — so you can book before anyone else.
           </p>
           <div className="flex flex-col sm:flex-row gap-3">
-            <Link href="/auth?mode=signup" className="inline-flex items-center justify-center gap-2 bg-[#7fb98a] text-[#1a3028] font-bold px-8 py-3.5 rounded-xl hover:bg-[#8fcb9b] transition-all text-sm">
+            <Link href={user ? '/dashboard/add' : '/auth?mode=signup'} className="inline-flex items-center justify-center gap-2 bg-[#7fb98a] text-[#1a3028] font-bold px-8 py-3.5 rounded-xl hover:bg-[#8fcb9b] transition-all text-sm">
               Start watching →
             </Link>
-            <Link href="/auth" className="inline-flex items-center justify-center gap-2 bg-white/8 text-white/80 font-medium px-8 py-3.5 rounded-xl hover:bg-white/15 transition-all text-sm border border-white/10">
-              Sign in
+            <Link href={user ? '/dashboard' : '/auth'} className="inline-flex items-center justify-center gap-2 bg-white/8 text-white/80 font-medium px-8 py-3.5 rounded-xl hover:bg-white/15 transition-all text-sm border border-white/10">
+              {user ? 'Go to dashboard' : 'Sign in'}
             </Link>
           </div>
           <p className="text-white/30 text-xs mt-5">$2.99 per watch · one-time · no subscription</p>
@@ -345,11 +388,11 @@ export default function Home() {
         <div className="bg-[#f0faf3] rounded-3xl p-10 border border-[#4a7c59]/15">
           <h2 className="font-display text-3xl font-bold text-[#1a3028] mb-3">Ready to snag that site?</h2>
           <p className="text-[#3d2b1f]/60 mb-1 text-sm">
-            Sign up free, then add a watch for any campground.
+            {user ? 'Add a watch for any campground and we\u2019ll take it from here.' : 'Sign up free, then add a watch for any campground.'}
           </p>
           <p className="text-[#3d2b1f]/40 mb-8 text-xs">$2.99 per watch · one-time · no subscription · no hidden fees</p>
-          <Link href="/auth?mode=signup" className="btn-primary text-sm px-8 py-3.5">
-            Get started →
+          <Link href={user ? '/dashboard/add' : '/auth?mode=signup'} className="btn-primary text-sm px-8 py-3.5">
+            {user ? 'Add a watch →' : 'Get started →'}
           </Link>
         </div>
       </section>
@@ -398,11 +441,6 @@ export default function Home() {
                 </select>
               </div>
               <div>
-                <label className="label">SMS (recommended)</label>
-                <input className="input" type="tel" placeholder="+1 555 000 0000" value={notifyPhone} onChange={e => setNotifyPhone(e.target.value)}/>
-                <p className="text-xs text-[#3d2b1f]/40 mt-1.5">By entering your phone number, you agree to receive SMS alerts from CampWatch. Reply STOP to unsubscribe. Msg & data rates may apply.</p>
-              </div>
-              <div>
                 <label className="label">Email</label>
                 <input className="input" type="email" placeholder="you@email.com" value={notifyEmail} onChange={e => setNotifyEmail(e.target.value)}/>
               </div>
@@ -413,12 +451,14 @@ export default function Home() {
               </button>
               <button
                 onClick={handleWatchSubmit}
-                disabled={!startDate || !endDate || (!notifyEmail && !notifyPhone)}
+                disabled={!startDate || !endDate || !notifyEmail}
                 className="flex-1 py-3 rounded-xl bg-[#1a3028] text-white text-sm font-semibold hover:bg-[#2a4038] transition-colors disabled:opacity-40">
                 Continue →
               </button>
             </div>
-            <p className="text-center text-xs text-[#3d2b1f]/30 mt-3">$2.99 one-time · sign up to complete</p>
+            <p className="text-center text-xs text-[#3d2b1f]/30 mt-3">
+              {user ? '$2.99 one-time · continue to add your watch' : '$2.99 one-time · sign up to complete'}
+            </p>
           </div>
         </div>
       )}
