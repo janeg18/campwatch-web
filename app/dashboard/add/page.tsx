@@ -40,8 +40,6 @@ export default function AddWatch() {
   const [endDate, setEndDate] = useState('')
   const [nights, setNights] = useState(2)
   const [notifyEmail, setNotifyEmail] = useState('')
-  const [notifyPhone, setNotifyPhone] = useState('')
-  const [smsConsent, setSmsConsent] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
@@ -73,8 +71,7 @@ export default function AddWatch() {
     if (!selected) { setError('Please select a campground'); return }
     if (!startDate || !endDate) { setError('Please select dates'); return }
     if (endDate <= startDate) { setError('Check-out must be after check-in'); return }
-    if (!notifyEmail && !notifyPhone) { setError('Add at least one notification method'); return }
-    if (notifyPhone && !smsConsent) { setError('Please check the box to agree to receive SMS alerts'); return }
+    if (!notifyEmail) { setError('Please add an email for alerts'); return }
 
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) { router.push('/auth'); return }
@@ -88,7 +85,7 @@ export default function AddWatch() {
       end_date: endDate,
       nights,
       notify_email: notifyEmail || null,
-      notify_phone: notifyPhone || null,
+      notify_phone: null,
     }
 
     setPendingWatchData(watchData)
@@ -236,27 +233,10 @@ export default function AddWatch() {
           <div className="card p-5 space-y-4">
             <div className="font-semibold text-sm text-[#1a3028]">🔔 Notifications</div>
             <div>
-              <label className="label">SMS (recommended)</label>
-              <input className="input" type="tel" placeholder="+1 555 000 0000"
-                value={notifyPhone} onChange={e => setNotifyPhone(e.target.value)} />
-              {notifyPhone && (
-                <label className="flex items-start gap-2.5 mt-3 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={smsConsent}
-                    onChange={e => setSmsConsent(e.target.checked)}
-                    className="mt-0.5 accent-[#4a7c59] flex-shrink-0 w-4 h-4"
-                  />
-                  <span className="text-xs text-[#3d2b1f]/60 leading-relaxed">
-                    I agree to receive recurring SMS availability alerts from CampWatch at the number provided. Reply STOP to unsubscribe, HELP for help. Msg & data rates may apply. No mobile data will be shared with third parties for marketing purposes. View our <Link href="/privacy" className="underline hover:text-[#1a3028]">Privacy Policy</Link>.
-                  </span>
-                </label>
-              )}
-            </div>
-            <div>
               <label className="label">Email</label>
               <input className="input" type="email" placeholder="you@email.com"
-                value={notifyEmail} onChange={e => setNotifyEmail(e.target.value)} />
+                value={notifyEmail} onChange={e => setNotifyEmail(e.target.value)} required />
+              <p className="text-xs text-[#3d2b1f]/50 mt-2">We&apos;ll email you the moment a matching site opens up.</p>
             </div>
           </div>
 
@@ -304,12 +284,6 @@ export default function AddWatch() {
                 <span className="text-[#3d2b1f]/60">Min nights</span>
                 <span className="font-medium text-[#1a3028]">{pendingWatchData.nights}+</span>
               </div>
-              {pendingWatchData.notify_phone && (
-                <div className="flex justify-between text-sm">
-                  <span className="text-[#3d2b1f]/60">SMS alerts</span>
-                  <span className="font-medium text-[#1a3028]">{pendingWatchData.notify_phone}</span>
-                </div>
-              )}
               {pendingWatchData.notify_email && (
                 <div className="flex justify-between text-sm">
                   <span className="text-[#3d2b1f]/60">Email alerts</span>
