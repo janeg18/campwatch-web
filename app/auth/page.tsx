@@ -12,7 +12,6 @@ function AuthForm() {
   const [mode, setMode] = useState<'signin' | 'signup'>('signin')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [phone, setPhone] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
@@ -36,7 +35,6 @@ function AuthForm() {
         email,
         password,
         options: {
-          data: { phone },
           emailRedirectTo: window.location.origin + '/dashboard',
         },
       })
@@ -90,14 +88,6 @@ function AuthForm() {
               placeholder={mode === 'signup' ? 'At least 6 characters' : '••••••••'}
               value={password} onChange={e => setPassword(e.target.value)} required />
           </div>
-          {mode === 'signup' && (
-            <div>
-              <label className="label">Phone (for SMS alerts)</label>
-              <input className="input" type="tel" placeholder="+1 555 000 0000"
-                value={phone} onChange={e => setPhone(e.target.value)} />
-              <p className="text-xs text-[#3d2b1f]/40 mt-1">Optional</p>
-            </div>
-          )}
           {error && (
             <div className="bg-red-50 border border-red-200 text-red-700 text-sm px-4 py-3 rounded-xl">
               {error}
