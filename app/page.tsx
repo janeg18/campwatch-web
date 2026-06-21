@@ -8,8 +8,8 @@ import { createClient } from '@/lib/supabase'
 const parks = [
   {
     name: 'Yosemite', state: 'CA', tag: 'California',
-    bg: '#1e3d2f',
-    accent: '#7fb98a',
+    bg: '#1A3D38',
+    accent: '#9DBFA0',
     campgrounds: [
       { id: '232447', name: 'Upper Pines' },
       { id: '232450', name: 'Lower Pines' },
@@ -19,8 +19,8 @@ const parks = [
   },
   {
     name: 'Zion', state: 'UT', tag: 'Utah',
-    bg: '#7a2e18',
-    accent: '#f0a882',
+    bg: '#8A3B22',
+    accent: '#E0A982',
     campgrounds: [
       { id: '232054', name: 'Watchman Campground' },
       { id: '232055', name: 'South Campground' },
@@ -28,16 +28,16 @@ const parks = [
   },
   {
     name: 'Grand Canyon', state: 'AZ', tag: 'Arizona',
-    bg: '#8b5a1a',
-    accent: '#f0c878',
+    bg: '#AB7D46',
+    accent: '#F0D8A8',
     campgrounds: [
       { id: '232489', name: 'Mather Campground' },
     ]
   },
   {
     name: 'Grand Teton', state: 'WY', tag: 'Wyoming',
-    bg: '#1a3048',
-    accent: '#90b8d8',
+    bg: '#2C544E',
+    accent: '#9FC8BE',
     campgrounds: [
       { id: '232493', name: 'Colter Bay Campground' },
       { id: '232494', name: 'Signal Mountain Campground' },
@@ -45,16 +45,16 @@ const parks = [
   },
   {
     name: 'Glacier', state: 'MT', tag: 'Montana',
-    bg: '#1a3d40',
-    accent: '#80c8d0',
+    bg: '#3A4A52',
+    accent: '#A8C4CE',
     campgrounds: [
       { id: '232493', name: 'Apgar Campground' },
     ]
   },
   {
     name: 'Big Bend', state: 'TX', tag: 'Texas',
-    bg: '#5a3810',
-    accent: '#d4a855',
+    bg: '#6B4A2A',
+    accent: '#D9B888',
     campgrounds: [
       { id: '232492', name: 'Chisos Basin Campground' },
     ]
@@ -133,7 +133,6 @@ export default function Home() {
 
   function handleWatchSubmit() {
     if (!watchModal || !startDate || !endDate) return
-    // Already signed in → straight to the dashboard add-watch page, no re-login.
     if (user) {
       router.push('/dashboard/add')
       return
@@ -152,32 +151,35 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen">
+    <div className="relative min-h-screen">
+
+      {/* Topographic background — full page, sits behind everything on cream */}
+      <div className="topo-bg fixed inset-0 -z-10" aria-hidden="true" />
 
       {/* Nav */}
       <nav className="flex items-center justify-between px-6 py-5 max-w-6xl mx-auto">
         <div className="flex items-center gap-2">
           <span className="text-xl">🏕</span>
-          <span className="font-display font-semibold text-lg text-[#1a3028]">CampWatch</span>
+          <span className="font-display font-semibold text-lg text-[#1A3D38]">CampWatch</span>
         </div>
         <div className="flex items-center gap-3">
           {!authLoaded ? (
-            <div className="w-7 h-7 rounded-full bg-[#1a3028]/10 animate-pulse" />
+            <div className="w-7 h-7 rounded-full bg-[#1A3D38]/10 animate-pulse" />
           ) : user ? (
             <>
-              <Link href="/dashboard" className="flex items-center gap-2 text-sm font-medium text-[#1a3028] hover:opacity-80 transition-opacity">
-                <span className="w-7 h-7 rounded-full bg-[#1a3028] text-white flex items-center justify-center text-xs font-semibold uppercase">
+              <Link href="/dashboard" className="flex items-center gap-2 text-sm font-medium text-[#1A3D38] hover:opacity-80 transition-opacity">
+                <span className="w-7 h-7 rounded-full bg-[#1A3D38] text-white flex items-center justify-center text-xs font-semibold uppercase">
                   {user.email?.[0] ?? '?'}
                 </span>
                 <span className="hidden sm:inline max-w-[180px] truncate">{user.email}</span>
               </Link>
-              <button onClick={handleSignOut} className="text-sm font-medium text-[#3d2b1f]/50 hover:text-[#1a3028] transition-colors">
+              <button onClick={handleSignOut} className="text-sm font-medium text-[#26302C]/45 hover:text-[#1A3D38] transition-colors">
                 Sign out
               </button>
             </>
           ) : (
             <>
-              <Link href="/auth" className="text-sm font-medium text-[#3d2b1f]/60 hover:text-[#1a3028] transition-colors">
+              <Link href="/auth" className="text-sm font-medium text-[#26302C]/55 hover:text-[#1A3D38] transition-colors">
                 Sign in
               </Link>
               <Link href="/auth?mode=signup" className="btn-primary">
@@ -188,41 +190,37 @@ export default function Home() {
         </div>
       </nav>
 
-      {/* Hero */}
-      <section className="relative overflow-hidden rounded-3xl mx-4 md:mx-8 mt-4 mb-20" style={{ background: '#1a3028' }}>
-        <div className="absolute inset-0" style={{
-          backgroundImage: `radial-gradient(ellipse at 10% 60%, rgba(127,185,138,0.15) 0%, transparent 60%),
-                            radial-gradient(ellipse at 90% 10%, rgba(74,124,89,0.1) 0%, transparent 50%)`
-        }}/>
-        <div className="relative z-10 px-8 md:px-16 py-20 md:py-28 max-w-3xl">
-          <div className="inline-flex items-center gap-2 bg-white/10 text-white/70 text-xs font-medium px-3 py-1.5 rounded-full mb-8">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#7fb98a] animate-pulse"/>
+      {/* Hero — light cream, airy */}
+      <section className="relative max-w-6xl mx-auto px-6 pt-10 md:pt-16 pb-20 md:pb-28">
+        <div className="max-w-3xl">
+          <div className="inline-flex items-center gap-2 bg-[#AB7D46]/12 text-[#8A6233] text-xs font-medium px-3 py-1.5 rounded-full mb-8">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#AB7D46] animate-pulse"/>
             Scanning 4,000+ campgrounds every minute
           </div>
-          <h1 className="font-display text-4xl md:text-6xl font-bold text-white leading-[1.1] mb-6">
+          <h1 className="font-display text-4xl md:text-6xl font-bold text-[#1A3D38] leading-[1.08] mb-6">
             Stop refreshing.<br/>
-            <span style={{ color: '#7fb98a' }}>Start camping.</span>
+            <span style={{ color: '#8A6233' }}>Start camping.</span>
           </h1>
-          <p className="text-white/60 text-lg max-w-md mb-10 leading-relaxed">
+          <p className="text-[#6F7A72] text-lg max-w-md mb-10 leading-relaxed">
             CampWatch monitors Recreation.gov and messages you the moment a campsite opens up — so you can book before anyone else.
           </p>
           <div className="flex flex-col sm:flex-row gap-3">
-            <Link href={user ? '/dashboard/add' : '/auth?mode=signup'} className="inline-flex items-center justify-center gap-2 bg-[#7fb98a] text-[#1a3028] font-bold px-8 py-3.5 rounded-xl hover:bg-[#8fcb9b] transition-all text-sm">
+            <Link href={user ? '/dashboard/add' : '/auth?mode=signup'} className="inline-flex items-center justify-center gap-2 bg-[#AB7D46] text-white font-bold px-8 py-3.5 rounded-xl hover:bg-[#9A6E3A] transition-all text-sm">
               Start watching →
             </Link>
-            <Link href={user ? '/dashboard' : '/auth'} className="inline-flex items-center justify-center gap-2 bg-white/8 text-white/80 font-medium px-8 py-3.5 rounded-xl hover:bg-white/15 transition-all text-sm border border-white/10">
+            <Link href={user ? '/dashboard' : '/auth'} className="inline-flex items-center justify-center gap-2 bg-white/70 text-[#1A3D38] font-medium px-8 py-3.5 rounded-xl hover:bg-white transition-all text-sm border border-[#1A3D38]/15">
               {user ? 'Go to dashboard' : 'Sign in'}
             </Link>
           </div>
-          <p className="text-white/30 text-xs mt-5">$2.99 per watch · one-time · no subscription</p>
+          <p className="text-[#6F7A72]/70 text-xs mt-5">$2.99 per watch · one-time · no subscription</p>
         </div>
       </section>
 
       {/* How it works */}
       <section className="max-w-5xl mx-auto px-6 mb-24">
         <div className="text-center mb-12">
-          <p className="text-xs font-semibold tracking-widest text-[#4a7c59] uppercase mb-3">How it works</p>
-          <h2 className="font-display text-3xl font-bold text-[#1a3028]">Three steps to your campsite</h2>
+          <p className="text-xs font-semibold tracking-widest text-[#8A6233] uppercase mb-3">How it works</p>
+          <h2 className="font-display text-3xl font-bold text-[#1A3D38]">Three steps to your campsite</h2>
         </div>
         <div className="grid md:grid-cols-3 gap-5">
           {[
@@ -245,22 +243,22 @@ export default function Home() {
               desc: 'The moment a site opens up, we email you so you can book before anyone else.',
             },
           ].map(item => (
-            <div key={item.num} className="bg-white rounded-2xl p-6 border border-[#e8e0d5]">
+            <div key={item.num} className="bg-white rounded-2xl p-6 border border-[#E6DFC9]">
               <div className="flex items-center gap-3 mb-4">
                 <span className="text-2xl">{item.icon}</span>
-                <span className="text-xs font-bold text-[#4a7c59] tracking-widest">{item.num}</span>
+                <span className="text-xs font-bold text-[#8A6233] tracking-widest">{item.num}</span>
               </div>
-              <h3 className="font-display text-base font-semibold text-[#1a3028] mb-2">{item.title}</h3>
-              <p className="text-sm text-[#3d2b1f]/60 leading-relaxed">{item.desc}</p>
+              <h3 className="font-display text-base font-semibold text-[#1A3D38] mb-2">{item.title}</h3>
+              <p className="text-sm text-[#26302C]/60 leading-relaxed">{item.desc}</p>
             </div>
           ))}
         </div>
         <div className="mt-8 flex justify-center">
-          <div className="inline-flex items-center gap-3 bg-[#f0faf3] border border-[#4a7c59]/20 rounded-2xl px-5 py-3.5">
+          <div className="inline-flex items-center gap-3 bg-[#F1EDDD] border border-[#AB7D46]/20 rounded-2xl px-5 py-3.5">
             <span className="text-lg">💳</span>
             <div>
-              <span className="font-semibold text-[#1a3028] text-sm">$2.99 per watch, one-time</span>
-              <span className="text-[#3d2b1f]/50 text-xs ml-2">· no subscription</span>
+              <span className="font-semibold text-[#1A3D38] text-sm">$2.99 per watch, one-time</span>
+              <span className="text-[#26302C]/50 text-xs ml-2">· no subscription</span>
             </div>
           </div>
         </div>
@@ -269,11 +267,11 @@ export default function Home() {
       {/* Parks we monitor */}
       <section className="max-w-6xl mx-auto px-6 mb-6">
         <div className="text-center mb-10">
-          <p className="text-xs font-semibold tracking-widest text-[#4a7c59] uppercase mb-3">Coverage</p>
-          <h2 className="font-display text-3xl font-bold text-[#1a3028] mb-2">
+          <p className="text-xs font-semibold tracking-widest text-[#8A6233] uppercase mb-3">Coverage</p>
+          <h2 className="font-display text-3xl font-bold text-[#1A3D38] mb-2">
             4,000+ campgrounds across the US
           </h2>
-          <p className="text-[#3d2b1f]/50 text-sm">Any site on Recreation.gov · click a park to explore</p>
+          <p className="text-[#26302C]/50 text-sm">Any site on Recreation.gov · click a park to explore</p>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
           {parks.map(park => (
@@ -281,13 +279,12 @@ export default function Home() {
               <button
                 onClick={() => setExpandedPark(expandedPark === park.name ? null : park.name)}
                 className={'relative overflow-hidden w-full text-left transition-all duration-200 rounded-2xl ' +
-                  (expandedPark === park.name ? 'ring-2 ring-[#7fb98a]' : 'hover:opacity-90')}
+                  (expandedPark === park.name ? 'ring-2 ring-[#AB7D46]' : 'hover:opacity-90')}
                 style={{
                   background: park.bg,
                   minHeight: '160px',
                 }}
               >
-                {/* Subtle gradient overlay */}
                 <div className="absolute inset-0 opacity-30" style={{
                   background: `radial-gradient(ellipse at 80% 20%, ${park.accent}40 0%, transparent 60%)`
                 }}/>
@@ -317,10 +314,10 @@ export default function Home() {
               </button>
 
               {expandedPark === park.name && (
-                <div className="mt-1.5 rounded-2xl overflow-hidden bg-white border border-[#e8e0d5] shadow-sm">
+                <div className="mt-1.5 rounded-2xl overflow-hidden bg-white border border-[#E6DFC9] shadow-sm">
                   {park.campgrounds.map(cg => (
-                    <div key={cg.id} className="flex items-center justify-between px-4 py-3 border-b border-[#f0ebe3] last:border-0 hover:bg-[#faf7f3] transition-colors">
-                      <span className="text-sm text-[#1a3028]">{cg.name}</span>
+                    <div key={cg.id} className="flex items-center justify-between px-4 py-3 border-b border-[#EFEAD9] last:border-0 hover:bg-[#FBF9EF] transition-colors">
+                      <span className="text-sm text-[#1A3D38]">{cg.name}</span>
                       <button
                         onClick={() => openWatchModal(cg, park)}
                         className="text-xs font-semibold px-3 py-1.5 rounded-lg ml-3 flex-shrink-0 transition-all hover:opacity-80"
@@ -336,15 +333,15 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Search by state */}
-      <section className="mb-20" style={{ background: '#1a3028' }}>
+      {/* Search by state — deep green block */}
+      <section className="mb-20 mx-4 md:mx-8 rounded-3xl overflow-hidden" style={{ background: '#1A3D38' }}>
         <div className="max-w-2xl mx-auto px-6 py-16 text-center">
-          <p className="text-xs font-semibold tracking-widest text-[#7fb98a] uppercase mb-3">Search</p>
+          <p className="text-xs font-semibold tracking-widest text-[#C9A86E] uppercase mb-3">Search</p>
           <h2 className="font-display text-3xl font-bold text-white mb-3">Find your campground</h2>
           <p className="text-white/50 text-sm mb-8">Enter a state code to discover campgrounds near you</p>
           <div className="flex gap-2 max-w-sm mx-auto mb-6">
             <input
-              className="flex-1 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#7fb98a] transition-all text-white placeholder-white/30"
+              className="flex-1 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#AB7D46] transition-all text-white placeholder-white/30"
               style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.12)' }}
               placeholder="e.g. CA, UT, WY..."
               value={stateQuery}
@@ -354,9 +351,9 @@ export default function Home() {
             <button
               onClick={searchByState}
               disabled={stateSearching}
-              className="bg-[#7fb98a] text-[#1a3028] font-bold px-6 py-3 rounded-xl hover:bg-[#8fcb9b] transition-colors text-sm flex-shrink-0">
+              className="bg-[#AB7D46] text-white font-bold px-6 py-3 rounded-xl hover:bg-[#9A6E3A] transition-colors text-sm flex-shrink-0">
               {stateSearching
-                ? <span className="w-4 h-4 border-2 border-[#1a3028]/30 border-t-[#1a3028] rounded-full animate-spin block"/>
+                ? <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin block"/>
                 : 'Search'}
             </button>
           </div>
@@ -373,7 +370,7 @@ export default function Home() {
                       { id: cg.FacilityID, name: cg.FacilityName },
                       { name: cg.ParentRecAreaName || '', state: cg.AddressStateCode || stateQuery.toUpperCase() }
                     )}
-                    className="text-xs font-semibold bg-[#7fb98a] text-[#1a3028] px-3 py-1.5 rounded-lg ml-4 flex-shrink-0 hover:bg-[#8fcb9b] transition-colors">
+                    className="text-xs font-semibold bg-[#AB7D46] text-white px-3 py-1.5 rounded-lg ml-4 flex-shrink-0 hover:bg-[#9A6E3A] transition-colors">
                     Watch
                   </button>
                 </div>
@@ -385,12 +382,12 @@ export default function Home() {
 
       {/* CTA */}
       <section className="max-w-2xl mx-auto px-6 mb-20 text-center">
-        <div className="bg-[#f0faf3] rounded-3xl p-10 border border-[#4a7c59]/15">
-          <h2 className="font-display text-3xl font-bold text-[#1a3028] mb-3">Ready to snag that site?</h2>
-          <p className="text-[#3d2b1f]/60 mb-1 text-sm">
+        <div className="bg-[#F1EDDD] rounded-3xl p-10 border border-[#AB7D46]/15">
+          <h2 className="font-display text-3xl font-bold text-[#1A3D38] mb-3">Ready to snag that site?</h2>
+          <p className="text-[#26302C]/60 mb-1 text-sm">
             {user ? 'Add a watch for any campground and we\u2019ll take it from here.' : 'Sign up free, then add a watch for any campground.'}
           </p>
-          <p className="text-[#3d2b1f]/40 mb-8 text-xs">$2.99 per watch · one-time · no subscription · no hidden fees</p>
+          <p className="text-[#26302C]/40 mb-8 text-xs">$2.99 per watch · one-time · no subscription · no hidden fees</p>
           <Link href={user ? '/dashboard/add' : '/auth?mode=signup'} className="btn-primary text-sm px-8 py-3.5">
             {user ? 'Add a watch →' : 'Get started →'}
           </Link>
@@ -398,16 +395,16 @@ export default function Home() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-[#e8e0d5] py-8">
-        <div className="max-w-5xl mx-auto px-6 flex items-center justify-between text-sm text-[#3d2b1f]/40">
+      <footer className="border-t border-[#E6DFC9] py-8">
+        <div className="max-w-5xl mx-auto px-6 flex items-center justify-between text-sm text-[#26302C]/40">
           <div className="flex items-center gap-2">
             <span>🏕</span>
-            <span className="font-display font-medium text-[#1a3028]">CampWatch</span>
+            <span className="font-display font-medium text-[#1A3D38]">CampWatch</span>
           </div>
           <div className="flex gap-5">
-            <Link href="/terms" className="hover:text-[#1a3028] transition-colors">Terms</Link>
-            <Link href="/privacy" className="hover:text-[#1a3028] transition-colors">Privacy</Link>
-            <Link href="/refunds" className="hover:text-[#1a3028] transition-colors">Refunds</Link>
+            <Link href="/terms" className="hover:text-[#1A3D38] transition-colors">Terms</Link>
+            <Link href="/privacy" className="hover:text-[#1A3D38] transition-colors">Privacy</Link>
+            <Link href="/refunds" className="hover:text-[#1A3D38] transition-colors">Refunds</Link>
           </div>
         </div>
       </footer>
@@ -418,10 +415,10 @@ export default function Home() {
           <div className="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl">
             <div className="flex items-center justify-between mb-5">
               <div>
-                <h2 className="font-display text-lg font-semibold text-[#1a3028]">{watchModal.campgroundName}</h2>
-                <p className="text-xs text-[#3d2b1f]/50 mt-0.5">{watchModal.park} · {watchModal.state}</p>
+                <h2 className="font-display text-lg font-semibold text-[#1A3D38]">{watchModal.campgroundName}</h2>
+                <p className="text-xs text-[#26302C]/50 mt-0.5">{watchModal.park} · {watchModal.state}</p>
               </div>
-              <button onClick={() => setWatchModal(null)} className="text-[#3d2b1f]/30 hover:text-[#3d2b1f] w-8 h-8 flex items-center justify-center rounded-full hover:bg-black/5 text-xl transition-colors">×</button>
+              <button onClick={() => setWatchModal(null)} className="text-[#26302C]/30 hover:text-[#26302C] w-8 h-8 flex items-center justify-center rounded-full hover:bg-black/5 text-xl transition-colors">×</button>
             </div>
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-3">
@@ -446,17 +443,17 @@ export default function Home() {
               </div>
             </div>
             <div className="flex gap-3 mt-6">
-              <button onClick={() => setWatchModal(null)} className="flex-1 py-3 rounded-xl border border-[#e8e0d5] text-sm font-medium text-[#3d2b1f]/60 hover:border-[#3d2b1f]/30 transition-colors">
+              <button onClick={() => setWatchModal(null)} className="flex-1 py-3 rounded-xl border border-[#E6DFC9] text-sm font-medium text-[#26302C]/60 hover:border-[#26302C]/30 transition-colors">
                 Cancel
               </button>
               <button
                 onClick={handleWatchSubmit}
                 disabled={!startDate || !endDate || !notifyEmail}
-                className="flex-1 py-3 rounded-xl bg-[#1a3028] text-white text-sm font-semibold hover:bg-[#2a4038] transition-colors disabled:opacity-40">
+                className="flex-1 py-3 rounded-xl bg-[#1A3D38] text-white text-sm font-semibold hover:bg-[#24514A] transition-colors disabled:opacity-40">
                 Continue →
               </button>
             </div>
-            <p className="text-center text-xs text-[#3d2b1f]/30 mt-3">
+            <p className="text-center text-xs text-[#26302C]/30 mt-3">
               {user ? '$2.99 one-time · continue to add your watch' : '$2.99 one-time · sign up to complete'}
             </p>
           </div>
