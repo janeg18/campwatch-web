@@ -5,48 +5,61 @@
 @tailwind utilities;
 
 :root {
-  --forest: #1a3028;
-  --forest-light: #234035;
-  --sage: #4a7c59;
-  --mint: #7fb98a;
-  --sand: #f5f0e8;
-  --sand-dark: #ede5d5;
-  --bark: #3d2b1f;
-  --sky: #e8f4f0;
+  /* CampWatch earth-tone palette (budhi_mudra inspired) */
+  --cream: #FBF9EF;
+  --cream-2: #F1EDDD;
+  --green: #1A3D38;
+  --green-soft: #2C544E;
+  --gold: #AB7D46;
+  --gold-deep: #8A6233;
+  --red: #B21F31;
+  --ink: #26302C;
+  --muted: #6F7A72;
+  --border: #E6DFC9;
+  --border-soft: #EFEAD9;
 }
 
 * { box-sizing: border-box; }
 
 body {
   font-family: 'DM Sans', sans-serif;
-  background: var(--sand);
-  color: var(--bark);
+  background: var(--cream);
+  color: var(--ink);
 }
 
 .font-display { font-family: 'Fraunces', serif; }
 
+/* Topographic tiling background, very low opacity. */
+.topo-bg {
+  background-image: url('/topo.svg');
+  background-size: 600px 600px;
+  background-repeat: repeat;
+  opacity: 0.06;
+  pointer-events: none;
+}
+
 .btn-primary {
-  @apply bg-[#1a3028] text-[#f5f0e8] font-semibold px-6 py-3 rounded-xl
-         hover:bg-[#234035] transition-all duration-200 text-sm;
+  @apply bg-[#AB7D46] text-white font-semibold px-6 py-3 rounded-xl
+         hover:bg-[#9A6E3A] transition-all duration-200 text-sm;
 }
 
 .btn-secondary {
-  @apply bg-transparent border-2 border-[#1a3028] text-[#1a3028] font-semibold
-         px-6 py-3 rounded-xl hover:bg-[#1a3028] hover:text-[#f5f0e8]
+  @apply bg-transparent border border-[#1A3D38]/25 text-[#1A3D38] font-semibold
+         px-6 py-3 rounded-xl hover:border-[#1A3D38]/50 hover:bg-[#1A3D38]/[0.03]
          transition-all duration-200 text-sm;
 }
 
 .card {
-  @apply bg-white rounded-2xl border border-[#ede5d5] shadow-sm;
+  @apply bg-white rounded-2xl border border-[#E6DFC9] shadow-sm;
 }
 
 .input {
-  @apply w-full bg-white border border-[#ede5d5] rounded-xl px-4 py-3
-         text-sm text-[#3d2b1f] placeholder-[#b0a898]
-         focus:outline-none focus:border-[#4a7c59] focus:ring-2 focus:ring-[#4a7c59]/20
+  @apply w-full bg-white border border-[#E6DFC9] rounded-xl px-4 py-3
+         text-sm text-[#26302C] placeholder-[#B5AE98]
+         focus:outline-none focus:border-[#AB7D46] focus:ring-2 focus:ring-[#AB7D46]/20
          transition-all duration-150;
 }
 
 .label {
-  @apply block text-xs font-semibold text-[#3d2b1f]/60 uppercase tracking-wider mb-1.5;
+  @apply block text-xs font-semibold text-[#26302C]/55 uppercase tracking-wider mb-1.5;
 }
